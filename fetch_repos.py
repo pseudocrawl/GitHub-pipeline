@@ -30,12 +30,12 @@ def search_top_repos(query, count=15):
 # Define SaaS categories to search
 
 categories = {
-    "data engineering" : "topic:data-engineering stars:>1000",
-    "analytics": "topic:analytics stars:>1000",
-    "machine learning": "topic:machine-learning language:python stars:>5000",
-    "devops":           "topic:devops stars:>1000",
-    "developer tools":  "topic:developer-tools stars:>1000",
-    "data visualization": "topic:data-visualization stars:>1000",
+    "data engineering" : "topic:data-engineering stars:>1000 forks:>200",
+    "analytics": "topic:analytics stars:>1000 forks:>200",
+    "machine learning": "topic:machine-learning stars:>3000 forks:>200",
+    "devops":           "topic:devops stars:>1000 forks:>200",
+    "developer tools":  "topic:developer-tools stars:>1000 forks:>200",
+    "data visualization": "topic:data-visualization stars:>1000 forks:>200",
 }
 
 all_repos = []

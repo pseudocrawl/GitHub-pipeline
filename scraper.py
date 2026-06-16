@@ -48,16 +48,28 @@ def get_repo_data(repo_full_name):
 def get_commit_activity(repo_full_name):
     """Pull weekly commit count for last 52 weeks"""
     url = f"https://api.github.com/repos/{repo_full_name}/status/commit_activity"
-    response = requests.get(url, headers=HEADERS)
+    
+    for attempt in range(3): #retry upto 3 times
+        response = requests.get(url, headers=HEADERS)
+        
+        if response.status_code == 202:
+            #GitHub is computing stats, wait and retry
+            time.sleep(3)
+            continue
 
-    if response.status_code != 200:
-        return None
+        if response.status_code != 200 or not response.json():
+            return None
 
-    # Last 4 weeks average commits
-    last_4_weeks = data[-4:] if len(data) >= 4 else data
-    avg_commits = sum(week["total"] for week in last_4_weeks) / len(last_4_weeks)
+        data = response.json()
+        # average commits
+        last_4_weeks = data[-4:] if len(data) >= 4 else data
+        avg_commits = sum(week["total"] for week in last_4_weeks) / len(last_4_weeks)
 
-    return round(avg_commits,2)
+        return round(avg_commits,2)
+
+    return None
+
+
 
 def scrape_all():
     """Scrape all repos and return as DataFrame"""
@@ -81,6 +93,9 @@ def scrape_all():
 
 if __name__ == "__main__":
     df = scrape_all()
-    df.to_csv("raw_repo_data.csv", index = False)
+    if os.path.exists("raw_repo_data.csv"):
+        df.to_csv("raw_repo_data.csv", mode='a', header=False, index=False)
+    else:
+        df.to_csv("raw_repo_data.csv", index=False)
     print(f"Done. Scraped {len(df)} repos.")
     print(df.head())
