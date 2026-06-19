@@ -5,6 +5,7 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 from repos import REPOS
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ def get_repo_data(repo_full_name):
         "description": data.get("description", ""),
         "stars": data["stargazers_count"],
         "forks": data["forks_count"],
-        "watchers": data["watchers_count"],
+        "watchers": data["subscribers_count"],
         "open_issues": data["open_issues_count"],
         "language": data.get("language", ""),
         "created_at": data["created_at"],
@@ -46,28 +47,20 @@ def get_repo_data(repo_full_name):
     }
     
 def get_commit_activity(repo_full_name):
-    """Pull weekly commit count for last 52 weeks"""
-    url = f"https://api.github.com/repos/{repo_full_name}/status/commit_activity"
+    """Pull total commit count for last 30 days"""
+    url = f"https://api.github.com/repos/{repo_full_name}/commits"
+    params = {
+        "since": (datetime.now() - timedelta(days=30)).isoformat(),
+        "per_page": 100
+    }
+
+    response = requests.get(url, headers = HEADERS, params = params)
     
-    for attempt in range(3): #retry upto 3 times
-        response = requests.get(url, headers=HEADERS)
-        
-        if response.status_code == 202:
-            #GitHub is computing stats, wait and retry
-            time.sleep(3)
-            continue
-
-        if response.status_code != 200 or not response.json():
-            return None
-
-        data = response.json()
-        # average commits
-        last_4_weeks = data[-4:] if len(data) >= 4 else data
-        avg_commits = sum(week["total"] for week in last_4_weeks) / len(last_4_weeks)
-
-        return round(avg_commits,2)
-
-    return None
+    if response.status_code != 200:
+        return None
+    
+    commits = response.json()
+    return len(commits)
 
 
 
@@ -80,8 +73,8 @@ def scrape_all():
 
         repo_data = get_repo_data(repo)
         if repo_data:
-            commit_avg = get_commit_activity(repo)
-            repo_data["avg_weekly_commits_4w"] = commit_avg
+            commit_count = get_commit_activity(repo)
+            repo_data["commits_last_30_days"] = commit_count
             results.append(repo_data)
 
         # 5000 requests/hour allowed

@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_github_repos
+    description: "Cleaned GitHub repository data"
+    columns:
+      - name: repo_name
+        description: "Full repository name (owner/repo)"
+        tests:
+          - not_null
+      - name: stars
+        tests:
+          - not_null
+      - name: language
+        description: "Primary programming language"

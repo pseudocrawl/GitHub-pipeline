@@ -10,7 +10,7 @@ HEADERS = {
     "Accept": "application/vnd.github.v3+json"
 }
 
-def search_top_repos(query, count=15):
+def search_top_repos(query, count=20):
     """Search GitHub for top repos by stars"""
     url = "https://api.github.com/search/repositories"
     params = {
@@ -36,13 +36,16 @@ categories = {
     "devops":           "topic:devops stars:>1000 forks:>200",
     "developer tools":  "topic:developer-tools stars:>1000 forks:>200",
     "data visualization": "topic:data-visualization stars:>1000 forks:>200",
+    "api tools": "topic:api stars:>1000 forks:>200",
+    "security": "topic:security stars:>1000 forks:>200",
+    "cloud native": "topic:cloud-native stars:>1000 forks:>200",
 }
 
 all_repos = []
 
 for category, query in categories.items():
     print(f"Searching category: {category}...")
-    repos = search_top_repos(query, count = 15)
+    repos = search_top_repos(query, count = 20)
     all_repos.extend(repos)
     print(f"Found {len(repos)} repos")
 

@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw
+    database: project-574b3547-7112-4651-817
+    schema: raw
+    tables:
+      - name: github_repos
