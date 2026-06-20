@@ -19,8 +19,12 @@ HEADERS = {
 def get_repo_data(repo_full_name):
     """Pull metadata for a single repo"""
     url = f"https://api.github.com/repos/{repo_full_name}"
-    response = requests.get(url, headers=HEADERS)
-
+    try:
+        response = requests.get(url, headers=HEADERS, timeout = 10)
+    except requests.exceptions.RequestException as e:
+        print(f"Connection error for {repo_full_name}: {e}")
+        return None
+     
     if response.status_code != 200:
         print(f"Error fetching {repo_full_name}: {response.status_code}")
         return None
