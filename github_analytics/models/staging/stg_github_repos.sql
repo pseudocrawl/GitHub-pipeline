@@ -1,5 +1,7 @@
 -- Staging model: clean raw data, rename columns, cast types
 
+{{ config(materialized='view') }}
+
 SELECT 
     repo_name,
     `description`,
@@ -9,7 +11,7 @@ SELECT
     `language`,
     TIMESTAMP(created_at) AS created_at,
     TIMESTAMP(updated_at) AS updated_at,
-    TIMESTAMP(scraped_at) AS scraped_at,
+    scraped_at,
     commits_last_30_days,
     topics,
     license

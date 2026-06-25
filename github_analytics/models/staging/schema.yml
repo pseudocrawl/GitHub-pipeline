@@ -11,5 +11,8 @@ models:
       - name: stars
         tests:
           - not_null
+      - name: forks
+        tests:
+          - not_null
       - name: language
         description: "Primary programming language"

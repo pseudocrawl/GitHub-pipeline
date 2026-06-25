@@ -1,0 +1,42 @@
+version: 2
+
+models: 
+  - name: repo_growth
+    description: "measures popularity of repo based on stars"
+    columns:
+      - name: date
+        description: "timestamp at which this row was scraped"
+        tests:
+          - not_null
+
+  - name: repo_health_score
+    description: "measure repo health based on stars, commits and forks"
+    columns:
+      - name: health_score
+        tests: 
+          - not_null
+
+  - name: repo_health_score_latest
+    description: "only latest scraped repos"
+    columns:
+      - name: repo_name
+        tests:
+          - not_null
+          - unique
+
+  - name: repo_activity_level
+    description: "activity level based on commits"
+    columns:
+      - name: activity_level
+        tests:
+          - not_null
+          - unique
+          - accepted_values:
+              values: ['high_activity', 'medium_activity', 'low_activity']
+      - name: avg_health
+        tests:
+          - not_null
+      - name: repo_count
+        tests:
+          - not_null
+

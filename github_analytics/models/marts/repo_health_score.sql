@@ -7,7 +7,7 @@ SELECT repo_name, `language`, stars, forks, open_issues, commits_last_30_days,
         + (LEAST(commits_last_30_days/50, 1.0)* 40)
         + CASE WHEN open_issues < 100 THEN 1.0
                WHEN open_issues < 50 THEN 0.5 
-               ELSE 0.2 END * 10 ,2)
+               ELSE 0.2 END * 10 ,0)
         AS health_score
 
 FROM {{ref('stg_github_repos')}}
