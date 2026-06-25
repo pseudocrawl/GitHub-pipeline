@@ -2,4 +2,5 @@ venv/
 .env
 __pycache__/
 *.pyc
-.DS_Store
+.DS_Storelogs/
+raw_repo_data.csv
